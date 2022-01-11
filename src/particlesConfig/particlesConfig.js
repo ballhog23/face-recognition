@@ -48,7 +48,7 @@ export const particlesConfig = {
         "duration": 0.4,
         "easing": "ease-out-quad",
         "factor": 1,
-        "maxSpeed": 50,
+        "maxSpeed": 20,
         "speed": 1
       },
       "bounce": {
@@ -106,7 +106,7 @@ export const particlesConfig = {
         "duration": 0.4,
         "factor": 100,
         "speed": 1,
-        "maxSpeed": 50,
+        "maxSpeed": 20,
         "easing": "ease-out-quad"
       },
       "slow": {
@@ -319,7 +319,7 @@ export const particlesConfig = {
         "acceleration": 9.81,
         "enable": false,
         "inverse": false,
-        "maxSpeed": 50
+        "maxSpeed": 20
       },
       "path": {
         "clamp": true,

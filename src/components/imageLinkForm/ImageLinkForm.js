@@ -1,7 +1,7 @@
 import React from 'react';
 import './ImageLinkForm.css';
 
-const ImageLinkForm = () => {
+const ImageLinkForm = ({ onInputChange, onButtonClick }) => {
     return (
         <div className='flex flex-column justify-center lh-copy pa2 form-container'>
             <label className='flex flex-column f4' htmlFor='photo-url'>
@@ -10,9 +10,10 @@ const ImageLinkForm = () => {
             <div className='text-btn-container mt3 center center-1'>
                 <div className='pa2 br3 shadow-5 text-btn-holder'>
                 <input type='text' name='photo-url' placeholder='https://imageurl.com/image'
-                    className='w-70 f4 photo-url pa2'
+                    className='w-70 f4 photo-url pa2' onChange={onInputChange}
                 />
-                <button className='w-30 grow f4 link pa2 dib white bg-light-pink detect'>
+                <button className='w-30 grow f4 link pa2 dib white bg-light-pink detect'
+                        onClick={onButtonClick}>
                     Detect
                 </button>
                 </div>
