@@ -21,9 +21,9 @@ class App extends Component {
     this.state = {
       input: ``,
       imageUrl: ``,
-      box: {},
+      box: [],
       route: `signin`,
-      isSignedIn: false
+      isSignedIn: false,
     };
   }
 
@@ -35,35 +35,40 @@ class App extends Component {
 
   // get the face location bounding box
   calculateFaceLocation = (data) => {
-    const clarifaiFace =
-      data?.outputs[0].data.regions[0].region_info.bounding_box;
-    console.log(clarifaiFace);
+    // const clarifaiFace =
+    //   data?.outputs[0].data.regions[0];
+    // console.log(clarifaiFace);
     const image = document.getElementById("inputimage");
     const width = Number(image.width);
     const height = Number(image.height);
-    return {
-      leftCol: clarifaiFace.left_col * width,
-      topRow: clarifaiFace.top_row * height,
-      rightCol: width - clarifaiFace.right_col * width,
-      bottomRow: height - clarifaiFace.bottom_row * height,
-    };
-    // data = data?.outputs[0].data.regions;
-    // console.log(data)
-    // let boxes = data.map(element => {
     // return {
-    //   leftCol: element.region_info.bounding_box.left_col * width,
-    //   topRow: element.region_info.bounding_box.top_row * height,
-    //   rightCol: width - (element.region_info.bounding_box.right_col * width),
-    //   bottomRow: height - (element.region_info.bounding_box.bottom_row * height)
+    //   leftCol: clarifaiFace.left_col * width,
+    //   topRow: clarifaiFace.top_row * height,
+    //   rightCol: width - clarifaiFace.right_col * width,
+    //   bottomRow: height - clarifaiFace.bottom_row * height,
     // };
-    // });
-    // console.log(boxes);
+    const clarifaiFace = data?.outputs[0].data.regions;
+    console.log(clarifaiFace);
+    let boxInfo = clarifaiFace.map((element) => element);
+    console.log(boxInfo);
+    let boxBoundary = boxInfo.map((i) => {
+      return {
+        leftCol: i.region_info.bounding_box.left_col * width,
+        topRow: i.region_info.bounding_box.top_row * height,
+        rightCol: width - i.region_info.bounding_box.right_col * width,
+        bottomRow: height - i.region_info.bounding_box.bottom_row * height,
+      };
+    });
+    console.log(boxBoundary)
+    this.setState({box: boxBoundary})
+    console.log('box state: ', this.state.box)
   };
 
   // display the face bounding box
-  displayFaceBox = (box) => {
-    this.setState({ box: box });
-  };
+  // displayFaceBox = (box) => {
+  //   this.setState({ box: box });
+  //   console.log('box state: ', this.state.box)
+  // };
 
   // handle button click
   onButtonClick = () => {
@@ -74,7 +79,7 @@ class App extends Component {
       // handle response
       .then((response) => {
         console.log(response);
-        this.displayFaceBox(this.calculateFaceLocation(response));
+        this.calculateFaceLocation(response);
       })
       // handle error
       .catch((err) => console.log("something went wrong", err));
@@ -84,43 +89,39 @@ class App extends Component {
   // to app main content
   onRouteChange = (route) => {
     // handle sign in
-    if (route === 'signin') {
-      this.setState({ isSignedIn: false })
-    }  else if (route === 'home') {
-      this.setState({ isSignedIn: true })
+    if (route === "signout") {
+      this.setState({ isSignedIn: false });
+    } else if (route === "home") {
+      this.setState({ isSignedIn: true });
     }
     // handle dynamic route
     this.setState({ route: route });
-    console.log('route: ', route)
-  }
+    console.log("route: ", route);
+  };
 
   render() {
+    const { isSignedIn, imageUrl, route, box } = this.state;
     return (
       <div className="App">
         <Particles id="tsparticles" options={particlesConfig} />
         <Navigation
-          isSignedIn={this.state.isSignedIn}
-          onRouteChange={this.onRouteChange} />
-        {
-          this.state.route === 'home' ?
-            <div>
-              <Rank />
-              <ImageLinkForm
-                onInputChange={this.onInputChange}
-                onButtonClick={this.onButtonClick}
-              />
-              <FaceRecognition
-                box={this.state.box}
-                imageUrl={this.state.imageUrl}
-              />
-            </div>
-            : (
-              this.state.route === 'signin' ?
-                <SignIn onRouteChange={this.onRouteChange} />
-                :
-                < Register onRouteChange={this.onRouteChange} />
-            )
-        }
+          isSignedIn={isSignedIn}
+          onRouteChange={this.onRouteChange}
+        />
+        {route === "home" ? (
+          <div>
+            <Rank />
+            <ImageLinkForm
+              onInputChange={this.onInputChange}
+              onButtonClick={this.onButtonClick}
+            />
+            <FaceRecognition box={box} imageUrl={imageUrl} />
+          </div>
+        ) : route === "signin" || route === "signout" ? (
+          <SignIn onRouteChange={this.onRouteChange} />
+        ) : (
+          <Register onRouteChange={this.onRouteChange} />
+        )}
       </div>
     );
   }

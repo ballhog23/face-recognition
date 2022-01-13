@@ -9,7 +9,7 @@ const Navigation = ({ onRouteChange, isSignedIn }) => {
         <p
           className="f4 link dim black underline pa3 pointer"
           style={{ marginLeft: "auto" }}
-          onClick={() => onRouteChange("signin")}
+          onClick={() => onRouteChange("signout")}
         >
           Sign Out
         </p>
